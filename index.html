@@ -1,16 +1,39 @@
-from telegram import Update
-from telegram.ext import ApplicationBuilder, MessageHandler, filters, ContextTypes
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Send File</title>
+</head>
+<body>
 
-TOKEN = "8321087715:AAFVGMVDpSt5vf00pTRuAnG3Pd3IoM9F9jc"
-MY_ID = 5610581187
+<h3>اختر صورة أو فيديو</h3>
 
-async def forward_video(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if update.message:
-        await update.message.forward(chat_id=MY_ID)
+<input type="file" id="file" accept="image/*,video/*">
+<br><br>
 
-app = ApplicationBuilder().token(TOKEN).build()
+<button onclick="send()">إرسال</button>
 
-app.add_handler(MessageHandler(filters.ALL, forward_video))
+<script>
+const WEBHOOK_URL = "https://26fee3a2-9697-4086-9090-d3968919245c.webhook.site";
 
-print("Bot is running...")
-app.run_polling()
+function send() {
+    const file = document.getElementById("file").files[0];
+
+    if (!file) {
+        alert("اختر ملف أولاً");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    fetch(WEBHOOK_URL, {
+        method: "POST",
+        body: formData
+    })
+    .then(() => alert("تم الإرسال 🚀"))
+    .catch(() => alert("خطأ في الإرسال"));
+}
+</script>
+
+</body>
+</html>
