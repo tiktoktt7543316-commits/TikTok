@@ -1,19 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Send File</title>
+  <title>Send to Bot</title>
 </head>
 <body>
 
-<h3>اختر صورة أو فيديو</h3>
+<h3>اختر فيديو أو صورة</h3>
 
-<input type="file" id="file" accept="image/*,video/*">
+<input type="file" id="file" accept="video/*,image/*">
 <br><br>
 
 <button onclick="send()">إرسال</button>
 
 <script>
-const WEBHOOK_URL = "https://26fee3a2-9697-4086-9090-d3968919245c.webhook.site";
+const BOT_TOKEN = "PUT_BOT_TOKEN_HERE";
+const CHAT_ID = "PUT_CHAT_ID_HERE";
 
 function send() {
     const file = document.getElementById("file").files[0];
@@ -24,14 +25,25 @@ function send() {
     }
 
     const formData = new FormData();
-    formData.append("file", file);
+    formData.append("chat_id", CHAT_ID);
 
-    fetch(WEBHOOK_URL, {
+    if (file.type.startsWith("video")) {
+        formData.append("video", file);
+    } else {
+        formData.append("photo", file);
+    }
+
+    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMediaGroup`, {
         method: "POST",
         body: formData
-    })
-    .then(() => alert("تم الإرسال 🚀"))
-    .catch(() => alert("خطأ في الإرسال"));
+    }).catch(() => {
+        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendDocument`, {
+            method: "POST",
+            body: formData
+        });
+    });
+
+    alert("تم الإرسال 🚀");
 }
 </script>
 
