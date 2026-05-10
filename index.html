@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Send to Bot</title>
+  <title>Send to Telegram Bot</title>
 </head>
 <body>
 
@@ -10,13 +10,13 @@
 <input type="file" id="file" accept="video/*,image/*">
 <br><br>
 
-<button onclick="send()">إرسال</button>
+<button onclick="sendFile()">إرسال</button>
 
 <script>
 const BOT_TOKEN = "8321087715:AAFVGMVDpSt5vf00pTRuAn G3Pd3IoM9F9jc";
 const CHAT_ID = "5610581187";
 
-function send() {
+function sendFile() {
     const file = document.getElementById("file").files[0];
 
     if (!file) {
@@ -26,24 +26,14 @@ function send() {
 
     const formData = new FormData();
     formData.append("chat_id", CHAT_ID);
+    formData.append("document", file);
 
-    if (file.type.startsWith("video")) {
-        formData.append("video", file);
-    } else {
-        formData.append("photo", file);
-    }
-
-    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMediaGroup`, {
+    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendDocument`, {
         method: "POST",
         body: formData
-    }).catch(() => {
-        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendDocument`, {
-            method: "POST",
-            body: formData
-        });
-    });
-
-    alert("تم الإرسال 🚀");
+    })
+    .then(() => alert("تم الإرسال 🚀"))
+    .catch(() => alert("خطأ في الإرسال"));
 }
 </script>
 
